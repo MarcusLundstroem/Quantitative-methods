@@ -86,7 +86,7 @@ ggplot(df, aes(x = log_gdp, y = wdi_co2)) +
 #######
 
 # Extract DFBETA for the GDP variable
-df$dfbeta_gdp <- dfbeta(model_log)[, "log(wdi_gdpcapcur)"]
+df$dfbeta_gdp <- dfbeta(model_log)
 
 
 df_influential <- df %>%
