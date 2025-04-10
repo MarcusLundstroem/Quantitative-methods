@@ -42,11 +42,14 @@ ggplot(binned_df, aes(x = mean_gdp, y = mean_co2)) +
        x = "Mean GDP per Capita (per bin)",
        y = "Mean CO2 Emissions (per bin)")
 
+df$log_gdp <- log(df$wdi_gdpcapcur)
+
 #######
 ###2###
 #######
 
-model_log <- lm(wdi_co2 ~ log(wdi_gdpcapcur), data = df)
+
+model_log <- lm(wdi_co2 ~ log_gdp, data = df)
 summary(model_log)
 
 model_poly <- lm(wdi_co2 ~ poly(wdi_gdpcapcur, 2), data = df)
@@ -69,7 +72,7 @@ ggplot(df, aes(x = wdi_gdpcapcur, y = wdi_co2)) +
     y = "CO2 Emissions"
   )
 
-ggplot(df, aes(x = wdi_gdpcapcur, y = wdi_co2)) +
+ggplot(df, aes(x = log_gdp, y = wdi_co2)) +
   geom_point(alpha = 0.5) +
   geom_smooth(method = "lm", formula = y ~ log(x), se = FALSE, color = "darkgreen") +
   labs(
@@ -95,7 +98,7 @@ print(df_influential)
 
 df_no_outlier <- df %>% filter(cname != "Qatar")
 
-model_log_no_outlier <- lm(wdi_co2 ~ log(wdi_gdpcapcur), data = df_no_outlier)
+model_log_no_outlier <- lm(wdi_co2 ~ log_gdp, data = df_no_outlier)
 
 modelsummary(
   list("Log GDP model" = model_log, "Log GDP model (excl Qatar)" = model_log_no_outlier),
@@ -160,9 +163,6 @@ modelsummary(
   statistic = "std.error",  
   stars = TRUE              
 )
-
-
-df$log_gdp <- log(df$wdi_gdpcapcur) #to be able to plot this in "interactions" package
 
 model_interaction_fixed_for_plotting <- lm(wdi_co2 ~ log_gdp * bmr_dem, data = df)
 
