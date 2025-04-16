@@ -91,6 +91,39 @@ ggplot(fh_data, aes(x = year, y = fh_polity2, group = ccode)) +
     axis.text.x = element_text(angle = 45, hjust = 1)
   )
 
+# Faceting
+
+# Step 1: Create long format from pdata
+pdata_long <- pdata %>%
+  select(cname, year, fh_polity2, gfs_envr) %>%
+  pivot_longer(cols = c(fh_polity2, gfs_envr),
+               names_to = "variable",
+               values_to = "value") %>%
+  drop_na()
+
+# Step 2: Sample 25 countries and filter
+set.seed(123)  # Reproducible sample
+sample_countries <- sample(unique(pdata_long$cname), 25)
+
+pdata_long_sample <- pdata_long %>%
+  filter(cname %in% sample_countries)
+
+# Step 3: Plot
+ggplot(pdata_long_sample, aes(x = year, y = value, color = variable)) +
+  geom_line() +
+  facet_wrap(~ cname, scales = "free_y") +
+  labs(
+    title = "Democracy and Environmental Spending (Sample of 25 Countries)",
+    x = "Year",
+    y = "Value",
+    color = "Variable"
+  ) +
+  theme_minimal(base_size = 11) +
+  theme(
+    strip.text = element_text(size = 8),
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
 #####
 ##4##
 #####
