@@ -53,3 +53,14 @@ modelsummary(
   gof_omit = "IC|Log|F|Adj|RMSE"
 )
 
+
+# Bonus visualization
+ggplot(data, aes(x = age, y = nowtot)) +
+  geom_point(alpha = 0.4) +
+  geom_smooth(method = "lm", formula = y ~ x + I(x^2), se = FALSE, color = "darkred", linewidth = 1.2) +
+  labs(
+    title = "Squared Fit: NOW Score vs age of congress members",
+    x = "Age",
+    y = "NOW Voting Score"
+  ) +
+  theme_minimal()
